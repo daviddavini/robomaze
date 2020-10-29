@@ -1,53 +1,46 @@
 import pygame
-from pygame import Vector2
 
-DISPLAY_WIDTH = 800
-DISPLAY_HEIGHT = 800
-FPS = 60
+import gameobject
+import constants
 
-def get_move_vector(pressed):
-    move_vector = Vector2(0, 0)
-    if pressed[pygame.K_w]:
-        move_vector += Vector2(0, -1)
-    if pressed[pygame.K_s]:
-        move_vector += Vector2(0, 1)
-    if pressed[pygame.K_a]:
-        move_vector += Vector2(-1, 0)
-    if pressed[pygame.K_d]:
-        move_vector += Vector2(1, 0)
+class Game:
 
-    if move_vector == Vector2(0, 0):
-        return move_vector
-    else:
-        return move_vector.normalize()
+    def handle_input(self):
+        '''Process input and events'''
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.is_running = False
 
-pygame.init()
+    def update(self, dt):
+        '''Update the game objects'''
+        self.player.update(dt)
 
-clock = pygame.time.Clock()
-display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.FULLSCREEN)
+    def draw(self, display):
+        '''Draw the game objects to the screen'''
+        self.display.fill(constants.BACKGROUND_COLOR)
+        self.player.draw(display)
+        pygame.display.flip()
 
-run = True
+    def __init__(self):
+        ### Start the game ###
+        pygame.init()
 
-background_color = (20, 25, 79)
-red = (255, 0, 0)
+        self.clock = pygame.time.Clock()
+        self.display = pygame.display.set_mode((constants.DISPLAY_WIDTH, constants.DISPLAY_HEIGHT))
 
-pos = Vector2(DISPLAY_WIDTH/2, DISPLAY_HEIGHT / 2)
-player = pygame.Rect(pos, (50, 50))
+        self.is_running = True
 
-while run:
-    clock.tick(FPS)
-    display.fill(background_color)
+        self.player = gameobject.GameObject()
 
-    pressed = pygame.key.get_pressed()
-    move_vector = get_move_vector(pressed)
-    player = player.move(9 * move_vector)
+    def play(self):
+        while self.is_running:
+            dt = self.clock.tick(constants.FPS) / 1000
+            print(dt)
+            self.handle_input()
+            self.update(dt)
+            self.draw(self.display)
+            
+        pygame.quit()
 
-    pygame.draw.rect(display, red, player)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
-    pygame.display.flip()
-
-pygame.quit()
+game = Game()
+game.play()
