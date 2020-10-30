@@ -52,9 +52,9 @@ class Game:
 
         #self.gameobjects.append(gameobject.make_enemy(self, player))
 
-        maze_set = maze.generate_maze_set(15,15)
+        maze_set = maze.generate_maze_set(6,6)
         for (r,c) in maze_set:
-            self.gameobjects.append(gameobject.make_wall(self, (100 + r*50, 100 + c*50)))
+            self.gameobjects.append(gameobject.make_wall(self, (30+r*60,30+c*60)))
 
     def play(self):
         while self.is_running:
