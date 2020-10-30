@@ -6,7 +6,7 @@ import random
 import math
 import pymunk
 
-# HMM, maybe it doesn't need to be an abstract class
+# hmm... maybe it doesn't need to be an abstract class
 class Component(abc.ABC):
 
     def __init__(self):
@@ -16,6 +16,9 @@ class Component(abc.ABC):
         pass
 
     def update(self, dt):
+        pass
+
+    def draw(self, display):
         pass
 
 class Wiggle(Component):
@@ -63,25 +66,47 @@ class Follow(Component):
         self.gameobject.components[Physics].body.velocity = self.speed * v
 
 class Physics(Component):
-    def __init__(self, pos = Vector2(constants.DISPLAY_WIDTH/2, constants.DISPLAY_HEIGHT/2), size = Vector2(30,30), color = (255,255,255,100), moveable = True):
+    def __init__(self, pos = Vector2(constants.DISPLAY_WIDTH/2, constants.DISPLAY_HEIGHT/2), size = None, color = (255,255,255,100), moveable = True):
+        '''
+        size -- (width, height) of the hitbox. If not specified, uses the Sprite Component's size
+        '''
         # Well, this stuff shouldn't really be used except for setup
+        super().__init__()
         self.pos = pos
         self.size = size
         self.color = color
         self.moveable = moveable
 
     def setup(self):
+        self.size = self.size or self.gameobject.components[Sprite].size
+
         body_type = pymunk.Body.DYNAMIC if self.moveable else pymunk.Body.STATIC
         self.body = pymunk.Body(1, pymunk.inf, body_type)
         self.body.position = self.pos
 
-        self.poly = pymunk.Poly.create_box(self.body, self.size, 3) #roundedness
+        corner_radius = 0
+        self.poly = pymunk.Poly.create_box(self.body, self.size, corner_radius) #roundedness
         self.poly.color = self.color
         
         self.gameobject.game.space.add(self.body, self.poly)
 
     def update(self, dt):
         self.gameobject.pos = Vector2(self.body.position)
+
+class Sprite(Component):
+    def __init__(self, filename):
+        super().__init__()
+        self.filename = filename
+        
+    def setup(self):
+        self.image = pygame.image.load('assets/' + self.filename)    # PROBLEM: Will this line work on a Windows OS?
+        rect = self.image.get_bounding_rect()
+        self.size = Vector2(rect.size) * constants.PIXEL_ART_SCALE
+        int_size = tuple(int(x) for x in self.size)     # Because pygame is picky
+        self.image = pygame.transform.scale(self.image, int_size)
+    
+    def draw(self, display):
+        display.blit(self.image, self.gameobject.components[Physics].body.position - self.size/2)
 
 class GameObject:
     def __init__(self, game, components):
@@ -101,7 +126,9 @@ class GameObject:
 
     def draw(self, display):
         # The physics debug drawing is done outside GameObject.draw
-        pass
+        # Later, we might want to change this so other components can draw too
+        if Sprite in self.components:
+            self.components[Sprite].draw(display)
     #     pygame.draw.rect(display, constants.CYAN, self.get_rect())
     #     print(self.get_rect())
 
@@ -122,10 +149,10 @@ def random_vector():
 ### The GameObjects ###
 
 def make_player(game):
-    return GameObject(game, components = [WASDControlled(200), Physics(color = (0,255,0,50))])
+    return GameObject(game, components = [Sprite('tank_0.png'), WASDControlled(200), Physics(color = (0,255,0,50))])
 
 def make_enemy(game, target):
-    return GameObject(game, components = [Follow(target, 50), Wiggle(1), Physics(size = Vector2(15,15), color = (255,0,0,50))])
+    return GameObject(game, components = [Sprite('brick.png'), Follow(target, 50), Wiggle(1), Physics(color = (255,0,0,50))])
 
 def make_wall(game, pos):
-    return GameObject(game, components = [Physics(pos = pos, size = Vector2(60,60), color = (150,150,255,50), moveable=False)])
+    return GameObject(game, components = [Sprite('block.png'), Physics(pos = pos, color = (150,150,255,50), moveable=False)])

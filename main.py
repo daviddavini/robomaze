@@ -24,10 +24,12 @@ class Game:
     def draw(self, display):
         '''Draw the game objects to the screen'''
         self.display.fill(constants.BACKGROUND_COLOR)
+
+        if self.debug:
+            self.space.debug_draw(self.pymunk_draw_options)
+
         for gameobject in self.gameobjects:
             gameobject.draw(display)
-
-        self.space.debug_draw(self.pymunk_draw_options)
 
         pygame.display.flip()
 
@@ -44,6 +46,8 @@ class Game:
         self.space.gravity = 0,0  # No thank you, gravity
         self.pymunk_draw_options = pymunk.pygame_util.DrawOptions(self.display)
         pymunk.pygame_util.positive_y_is_up = False
+
+        self.debug = True
 
         self.gameobjects = []
 
