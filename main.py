@@ -1,6 +1,6 @@
 import pygame
 
-import gameobject
+from gameobject import GameObject, Movement, WASDControlled, Follow, Wiggle
 import constants
 
 class Game:
@@ -13,12 +13,14 @@ class Game:
 
     def update(self, dt):
         '''Update the game objects'''
-        self.player.update(dt)
+        for gameobject in self.gameobjects:
+            gameobject.update(dt)
 
     def draw(self, display):
         '''Draw the game objects to the screen'''
         self.display.fill(constants.BACKGROUND_COLOR)
-        self.player.draw(display)
+        for gameobject in self.gameobjects:
+            gameobject.draw(display)
         pygame.display.flip()
 
     def __init__(self):
@@ -30,12 +32,17 @@ class Game:
 
         self.is_running = True
 
-        self.player = gameobject.GameObject()
+        self.gameobjects = []
+
+        player = GameObject(components = [Movement(300), Wiggle(), WASDControlled()], color = constants.CYAN, size = (40, 40))
+        self.gameobjects.append(player)
+
+        enemy = GameObject(components = [Movement(50), Follow(player), Wiggle()], color = constants.RED, size = (20, 20))
+        self.gameobjects.append(enemy)
 
     def play(self):
         while self.is_running:
             dt = self.clock.tick(constants.FPS) / 1000
-            print(dt)
             self.handle_input()
             self.update(dt)
             self.draw(self.display)
