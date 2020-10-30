@@ -28,7 +28,7 @@ class Wiggle(Component):
         self.wiggle_amount = wiggle_amount
 
     def update(self, dt):
-        self.gameobject.pos += self.wiggle_amount * random_vector()
+        self.gameobject.pos += random.uniform(0, self.wiggle_amount) * random_vector()
 
 class WASDControlled(Component):
     def update(self, dt):
