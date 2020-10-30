@@ -50,7 +50,7 @@ class Game:
         player = gameobject.make_player(self)
         self.gameobjects.append(player)
 
-        #self.gameobjects.append(gameobject.make_enemy(self, player))
+        self.gameobjects.append(gameobject.make_enemy(self, player))
 
         maze_set = maze.generate_maze_set(6,6)
         for (r,c) in maze_set:
