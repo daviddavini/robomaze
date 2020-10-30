@@ -54,7 +54,8 @@ def remove_wall(maze_set, edge):
     r, c = edge_to_canvas_coords(edge)
     maze_set.remove((r, c))
 
-def generate_maze_set(n_rows, n_cols, tree):
+def generate_maze_set(n_rows, n_cols):
+    tree = generate_maze_tree(n_rows, n_cols)
     maze_set = full_maze_set(n_rows, n_cols)
     for edge in tree:
         remove_wall(maze_set, edge)

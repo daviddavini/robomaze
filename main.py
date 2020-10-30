@@ -27,7 +27,7 @@ class Game:
             gameobject.draw(display)
 
         self.space.debug_draw(self.pymunk_draw_options)
-        
+
         pygame.display.flip()
 
     def __init__(self):
@@ -49,7 +49,7 @@ class Game:
         player = gameobject.make_player(self)
         self.gameobjects.append(player)
 
-        self.gameobjects.append(gameobject.make_enemy(self, player))
+        #self.gameobjects.append(gameobject.make_enemy(self, player))
 
         self.gameobjects.append(gameobject.make_wall(self))
 
@@ -59,7 +59,7 @@ class Game:
             self.handle_input()
             self.update(dt)
             self.draw(self.display)
-            
+
         pygame.quit()
 
 game = Game()
