@@ -1,6 +1,9 @@
 import pygame
+from pygame import Vector2
+import pymunk
+import pymunk.pygame_util
 
-from gameobject import GameObject, Movement, WASDControlled, Follow, Wiggle
+import gameobject
 import constants
 
 class Game:
@@ -13,6 +16,7 @@ class Game:
 
     def update(self, dt):
         '''Update the game objects'''
+        self.space.step(dt)
         for gameobject in self.gameobjects:
             gameobject.update(dt)
 
@@ -21,6 +25,9 @@ class Game:
         self.display.fill(constants.BACKGROUND_COLOR)
         for gameobject in self.gameobjects:
             gameobject.draw(display)
+
+        self.space.debug_draw(self.pymunk_draw_options)
+        
         pygame.display.flip()
 
     def __init__(self):
@@ -32,13 +39,19 @@ class Game:
 
         self.is_running = True
 
+        self.space = pymunk.Space()
+        self.space.gravity = 0,0  # No thank you, gravity
+        self.pymunk_draw_options = pymunk.pygame_util.DrawOptions(self.display)
+        pymunk.pygame_util.positive_y_is_up = False
+
         self.gameobjects = []
 
-        player = GameObject(components = [Movement(300), WASDControlled()], color = constants.CYAN, size = (40, 40))
+        player = gameobject.make_player(self)
         self.gameobjects.append(player)
 
-        enemy = GameObject(components = [Movement(50), Follow(player), Wiggle(1)], color = constants.RED, size = (20, 20))
-        self.gameobjects.append(enemy)
+        self.gameobjects.append(gameobject.make_enemy(self, player))
+
+        self.gameobjects.append(gameobject.make_wall(self))
 
     def play(self):
         while self.is_running:
