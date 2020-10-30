@@ -3,6 +3,7 @@ from pygame import Vector2
 import pymunk
 import pymunk.pygame_util
 
+import maze
 import gameobject
 import constants
 
@@ -51,7 +52,9 @@ class Game:
 
         self.gameobjects.append(gameobject.make_enemy(self, player))
 
-        self.gameobjects.append(gameobject.make_wall(self))
+        maze_set = maze.generate_maze_set(15,15)
+        for (r,c) in maze_set:
+            self.gameobjects.append(gameobject.make_wall(self, (100 + r*50, 100 + c*50)))
 
     def play(self):
         while self.is_running:

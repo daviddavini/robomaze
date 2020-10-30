@@ -127,5 +127,5 @@ def make_player(game):
 def make_enemy(game, target):
     return GameObject(game, components = [Follow(target, 50), Wiggle(1), Physics(size = Vector2(15,15), color = (255,0,0,50))])
 
-def make_wall(game):
-    return GameObject(game, components = [Physics(color = (0,255,0,50), moveable=False)])
+def make_wall(game, pos):
+    return GameObject(game, components = [Physics(pos = pos, color = (150,150,255,50), moveable=False)])
