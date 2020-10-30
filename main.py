@@ -34,10 +34,10 @@ class Game:
 
         self.gameobjects = []
 
-        player = GameObject(components = [Movement(300), Wiggle(), WASDControlled()], color = constants.CYAN, size = (40, 40))
+        player = GameObject(components = [Movement(300), Wiggle(5), WASDControlled()], color = constants.CYAN, size = (40, 40))
         self.gameobjects.append(player)
 
-        enemy = GameObject(components = [Movement(50), Follow(player), Wiggle()], color = constants.RED, size = (20, 20))
+        enemy = GameObject(components = [Movement(50), Follow(player), Wiggle(2)], color = constants.RED, size = (20, 20))
         self.gameobjects.append(enemy)
 
     def play(self):

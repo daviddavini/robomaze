@@ -3,6 +3,7 @@ import constants
 from pygame import Vector2
 import abc
 import random
+import math
 
 class Component(abc.ABC):
 
@@ -23,8 +24,11 @@ class Movement(Component):
         self.gameobject.pos += self.speed * self.direction * dt
 
 class Wiggle(Component):
+    def __init__(self, wiggle_amount):
+        self.wiggle_amount = wiggle_amount
+
     def update(self, dt):
-        self.gameobject.pos += random_vector()
+        self.gameobject.pos += self.wiggle_amount * random_vector()
 
 class WASDControlled(Component):
     def update(self, dt):
@@ -67,10 +71,9 @@ class GameObject:
         self.color = color
 
         # self.components is a Dict mapping Component classes (the keys) to Component objects (the values)
-        self.components = {}
+        self.components = {type(comp) : comp for comp in components}
         for component in components:
             component.gameobject = self
-            self.components[type(component)] = component
     
     def update(self, dt):
         for component in self.components.values():
@@ -88,4 +91,5 @@ def try_normalize(v):
     return v.normalize()
 
 def random_vector():
-    return Vector2(random.random(), random.random())
+    theta = random.uniform(0, 2*math.pi)
+    return Vector2(math.cos(theta), math.sin(theta))
