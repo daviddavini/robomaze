@@ -5,6 +5,7 @@ import abc
 import random
 import math
 import pymunk
+import os
 
 # hmm... maybe it doesn't need to be an abstract class
 class Component(abc.ABC):
@@ -87,7 +88,7 @@ class Physics(Component):
         corner_radius = 0
         self.poly = pymunk.Poly.create_box(self.body, self.size, corner_radius) #roundedness
         self.poly.color = self.color
-        
+
         self.gameobject.game.space.add(self.body, self.poly)
 
     def update(self, dt):
@@ -97,20 +98,20 @@ class Sprite(Component):
     def __init__(self, filename):
         super().__init__()
         self.filename = filename
-        
+
     def setup(self):
-        self.image = pygame.image.load('assets/' + self.filename)    # PROBLEM: Will this line work on a Windows OS?
+        self.image = pygame.image.load(os.path.join('assets', self.filename))    
         rect = self.image.get_bounding_rect()
         self.size = Vector2(rect.size) * constants.PIXEL_ART_SCALE
         int_size = tuple(int(x) for x in self.size)     # Because pygame is picky
         self.image = pygame.transform.scale(self.image, int_size)
-    
+
     def draw(self, display):
         display.blit(self.image, self.gameobject.components[Physics].body.position - self.size/2)
 
 class GameObject:
     def __init__(self, game, components):
-        ''' 
+        '''
         components -- list of Components objects
         '''
         self.game = game
@@ -119,7 +120,7 @@ class GameObject:
         for component in components:
             component.gameobject = self
             component.setup()
-    
+
     def update(self, dt):
         for component in self.components.values():
             component.update(dt)
