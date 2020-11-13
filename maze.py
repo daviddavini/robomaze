@@ -3,8 +3,6 @@ import copy
 import sys
 import itertools
 
-random.seed(1)
-
 def print_grid(l):
     rows = [ ''.join(row) + '\n' for row in l ]
     grid = ''.join(rows)
