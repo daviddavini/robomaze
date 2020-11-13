@@ -2,6 +2,8 @@
 
 - Rougue-like game
 
+- Controls: WASD (no diag.), mouse to shoot
+
 - Bouncing bullets
 - Upgrade system (more bounces, faster tank, homing, shoot through walls, teleport)
 
@@ -18,14 +20,17 @@
 
 - Each level is floor of infinitely-tall tower (difficulty increases)
 
+- Art dimensions:
+- Block - 
 
 # Tasks
 
 Priority A
 - Camera that follows the player
+- Fix object drawing (by size, not fixed pixels)
+- Redraw player
 
 Priority B
 - Fix the pymunk collision
-- Fix object drawing (pixels)
 
 Priority C
