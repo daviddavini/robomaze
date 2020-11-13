@@ -1,11 +1,13 @@
-import pygame
-import constants
-from pygame import Vector2
 import abc
 import random
 import math
-import pymunk
 import os
+
+import pygame
+import pymunk
+from pygame import Vector2
+
+import constants
 
 # hmm... maybe it doesn't need to be an abstract class
 class Component(abc.ABC):
@@ -14,6 +16,7 @@ class Component(abc.ABC):
         self.gameobject = None
 
     def setup(self):
+        '''For init logic requiring self.gameobject'''
         pass
 
     def update(self, dt):
@@ -67,7 +70,8 @@ class Follow(Component):
         self.gameobject.components[Physics].body.velocity = self.speed * v
 
 class Physics(Component):
-    def __init__(self, pos = Vector2(constants.DISPLAY_WIDTH/2, constants.DISPLAY_HEIGHT/2), size = None, color = (255,255,255,100), moveable = True):
+    def __init__(self, pos = Vector2(constants.DISPLAY_WIDTH/2, constants.DISPLAY_HEIGHT/2), 
+                size = None, color = (255,255,255,100), moveable = True):
         '''
         size -- (width, height) of the hitbox. If not specified, uses the Sprite Component's size
         '''
@@ -98,9 +102,7 @@ class Sprite(Component):
     def __init__(self, filename):
         super().__init__()
         self.filename = filename
-
-    def setup(self):
-        self.image = pygame.image.load(os.path.join('assets', self.filename))    
+        self.image = pygame.image.load(os.path.join('assets', self.filename))
         rect = self.image.get_bounding_rect()
         self.size = Vector2(rect.size) * constants.PIXEL_ART_SCALE
         int_size = tuple(int(x) for x in self.size)     # Because pygame is picky

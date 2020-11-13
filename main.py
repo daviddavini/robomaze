@@ -9,15 +9,16 @@ import constants
 
 class Game:
 
-    def handle_input(self):
+    def handle_events(self):
         '''Process input and events'''
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.is_running = False
 
     def update(self, dt):
-        '''Update the game objects'''
+        '''Update the internal state of the game'''
         self.space.step(dt)
+
         for gameobject in self.gameobjects:
             gameobject.update(dt)
 
@@ -28,8 +29,8 @@ class Game:
         if self.debug:
             self.space.debug_draw(self.pymunk_draw_options)
 
-        for gameobject in self.gameobjects:
-            gameobject.draw(display)
+        for gameobj in self.gameobjects:
+            gameobj.draw(display)
 
         pygame.display.flip()
 
@@ -62,8 +63,10 @@ class Game:
 
     def play(self):
         while self.is_running:
+            # dt is the amount of seconds since the last frame
             dt = self.clock.tick(constants.FPS) / 1000
-            self.handle_input()
+
+            self.handle_events()
             self.update(dt)
             self.draw(self.display)
 
