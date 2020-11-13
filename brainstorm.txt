@@ -1,0 +1,31 @@
+# Game Idea
+
+- Rougue-like game
+
+- Bouncing bullets
+- Upgrade system (more bounces, faster tank, homing, shoot through walls, teleport)
+
+- Control scrambling "gates" (group theory logic)
+- LR, UD, Rotate Clockwise, Rotate Counter
+- Downgrade system
+
+- Mix-and-match robot enemies (randomly generated, strength scales)
+- Robot factory
+
+- Boss battles (every 5 levels, linked to upgrades)
+
+- Floor coloring system (path to exit, path to upgrades)
+
+- Each level is floor of infinitely-tall tower (difficulty increases)
+
+
+# Tasks
+
+Priority A
+- Camera that follows the player
+
+Priority B
+- Fix the pymunk collision
+- Fix object drawing (pixels)
+
+Priority C
