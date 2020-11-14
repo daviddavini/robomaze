@@ -55,19 +55,23 @@ class WASDControlled(Component):
         return try_normalize(move_vector)
 
 class Follow(Component):
-    def __init__(self, target, speed):
+    def __init__(self, target, speed, moving=True):
         '''
         target - GameObject to follow
+        moving - if False, just sets position to player
         '''
         super().__init__()
         self.speed = speed
         self.target = target
+        self.moving = moving
 
     def update(self, dt):
-        pass
-        v = self.target.components[Physics].body.position - self.gameobject.components[Physics].body.position
-        v = try_normalize(v)
-        self.gameobject.components[Physics].body.velocity = self.speed * v
+        if not self.moving:
+            self.gameobject.components[Physics].body.position = self.target.components[Physics].body.position
+        else:
+            v = self.target.components[Physics].body.position - self.gameobject.components[Physics].body.position
+            v = try_normalize(v)
+            self.gameobject.components[Physics].body.velocity = self.speed * v
 
 class Physics(Component):
     def __init__(self, pos = Vector2(constants.DISPLAY_WIDTH/2, constants.DISPLAY_HEIGHT/2), 
@@ -99,17 +103,24 @@ class Physics(Component):
         self.gameobject.pos = Vector2(self.body.position)
 
 class Sprite(Component):
-    def __init__(self, filename):
+    def __init__(self, filename, size = Vector2(32, 32)):
         super().__init__()
         self.filename = filename
         self.image = pygame.image.load(os.path.join('assets', self.filename))
-        rect = self.image.get_bounding_rect()
-        self.size = Vector2(rect.size) * constants.PIXEL_ART_SCALE
+        self.size = size
         int_size = tuple(int(x) for x in self.size)     # Because pygame is picky
         self.image = pygame.transform.scale(self.image, int_size)
 
-    def draw(self, display):
-        display.blit(self.image, self.gameobject.components[Physics].body.position - self.size/2)
+        #rect = self.image.get_bounding_rect()
+        #self.size = Vector2(rect.size) * constants.PIXEL_ART_SCALE
+        # int_size = tuple(int(x) for x in self.size)     # Because pygame is picky
+        # self.image = pygame.transform.scale(self.image, int_size)
+
+    def draw(self, display, camera):
+        screen_center_pos = Vector2(pygame.display.get_surface().get_size()) / 2
+        cam_pos = camera.components[Physics].body.position
+        delta_from_cam = self.gameobject.components[Physics].body.position - self.size/2 - cam_pos
+        display.blit(self.image, screen_center_pos + delta_from_cam)
 
 class GameObject:
     def __init__(self, game, components):
@@ -127,11 +138,11 @@ class GameObject:
         for component in self.components.values():
             component.update(dt)
 
-    def draw(self, display):
+    def draw(self, display, camera):
         # The physics debug drawing is done outside GameObject.draw
         # Later, we might want to change this so other components can draw too
         if Sprite in self.components:
-            self.components[Sprite].draw(display)
+            self.components[Sprite].draw(display, camera)
     #     pygame.draw.rect(display, constants.CYAN, self.get_rect())
     #     print(self.get_rect())
 
@@ -158,4 +169,7 @@ def make_enemy(game, target):
     return GameObject(game, components = [Sprite('brick.png'), Follow(target, 50), Wiggle(1), Physics(color = (255,0,0,50))])
 
 def make_wall(game, pos):
-    return GameObject(game, components = [Sprite('block.png'), Physics(pos = pos, color = (150,150,255,50), moveable=False)])
+    return GameObject(game, components = [Sprite('block.png', size = Vector2(64,64)), Physics(pos = pos, color = (150,150,255,50), moveable=False)])
+
+def make_camera(game, target):
+    return GameObject(game, components = [Physics(color = (255, 0, 255, 50), size = Vector2(10,10)), Follow(target, 500, moving=False)])

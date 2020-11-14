@@ -22,7 +22,7 @@ class Game:
         for gameobject in self.gameobjects:
             gameobject.update(dt)
 
-    def draw(self, display):
+    def draw(self, display, camera):
         '''Draw the game objects to the screen'''
         self.display.fill(constants.BACKGROUND_COLOR)
 
@@ -30,7 +30,7 @@ class Game:
             self.space.debug_draw(self.pymunk_draw_options)
 
         for gameobj in self.gameobjects:
-            gameobj.draw(display)
+            gameobj.draw(display, camera)
 
         pygame.display.flip()
 
@@ -48,18 +48,19 @@ class Game:
         self.pymunk_draw_options = pymunk.pygame_util.DrawOptions(self.display)
         pymunk.pygame_util.positive_y_is_up = False
 
-        self.debug = True
+        self.debug = False
 
         self.gameobjects = []
 
         player = gameobject.make_player(self)
         self.gameobjects.append(player)
-
         self.gameobjects.append(gameobject.make_enemy(self, player))
+        self.camera = gameobject.make_camera(self, player)
+        self.gameobjects.append(self.camera)
 
         maze_set = maze.generate_maze_set(6,6)
         for (r,c) in maze_set:
-            self.gameobjects.append(gameobject.make_wall(self, (30+r*60,30+c*60)))
+            self.gameobjects.append(gameobject.make_wall(self, (30+r*64,30+c*64)))
 
     def play(self):
         while self.is_running:
@@ -68,7 +69,7 @@ class Game:
 
             self.handle_events()
             self.update(dt)
-            self.draw(self.display)
+            self.draw(self.display, self.camera)
 
         pygame.quit()
 
