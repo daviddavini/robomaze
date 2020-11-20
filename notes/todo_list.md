@@ -9,7 +9,7 @@ Priority B
 - [x] (D) Turn off Camera's collidabilty
 - [x] (D) Make crosshair transparent
 - [ ] Fix screen tearing
-- [ ] Replace init-setup with callback functions!
+- [ ] (D) Replace init-setup with callback functions!
 
 Priority C
 - [x] Make this brainstorm markdown! Yee
