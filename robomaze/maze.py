@@ -1,7 +1,5 @@
 import random
-import copy
 import sys
-import itertools
 
 def print_grid(l):
     rows = [ ''.join(row) + '\n' for row in l ]
@@ -40,7 +38,8 @@ def edge_to_canvas_coords(edge):
     return (r, c)
 
 def full_maze_set(n_rows, n_cols):
-    R, C = 2 * n_rows + 1, 2 * n_cols + 1
+    #R = 2 * n_rows + 1
+    C = 2 * n_cols + 1
     maze_set = set()
     for r in range(n_rows):
         maze_set |= { (2 * r, c) for c in range(C) }
@@ -66,8 +65,13 @@ def generate_maze_grid(R, C, maze_set):
         grid[r][c] = '#'
     return grid
 
+# Hey Daniel
+# This code produces an error
+# So I commented it out
+# Could you fix this?
+
 def print_maze(n_rows, n_cols):
-    tree = generate_maze_tree(n_rows, n_cols)
-    maze_set = generate_maze_set(n_rows, n_cols, tree)
+    # tree = generate_maze_tree(n_rows, n_cols)
+    maze_set = generate_maze_set(n_rows, n_cols)
     grid = generate_maze_grid(2 * n_rows + 1, 2 * n_cols + 1, maze_set)
     print_grid(grid)

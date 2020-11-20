@@ -1,15 +1,19 @@
+```
 ______      _                     ___  ___
 | ___ \    | |                    |  \/  |
 | |_/ /___ | |__   ___    ______  | .  . | __ _ _______
 |    // _ \| '_ \ / _ \  |______| | |\/| |/ _` |_  / _ \
 | |\ \ (_) | |_) | (_) |          | |  | | (_| |/ /  __/
 \_| \_\___/|_.__/ \___/           \_|  |_/\__,_/___\___|
+```
+
+Note: To preview a markdown file in VS Code, use Cmd-Shift-V
 
 # Game Idea
 
 - Rougue-like game
 
-- Controls: WASD (no diag.), mouse to shoot
+- Controls: WASD (no diag.), mouse to shoot (crosshair for mouse)
 
 - Bouncing bullets
 - Upgrade system (more bounces, faster tank, homing, shoot through walls, teleport)
@@ -26,19 +30,3 @@ ______      _                     ___  ___
 - Floor coloring system (path to exit, path to upgrades)
 
 - Each level is floor of infinitely-tall tower (difficulty increases)
-
-- Art dimensions:
-- Block - 
-
-# Tasks
-
-Priority A
-- Camera that follows the player
-- Fix object drawing (by size, not fixed pixels)
-- Redraw player
-
-Priority B
-- Fix the pymunk collision
-- Turn off Camera's collidabilty
-
-Priority C
